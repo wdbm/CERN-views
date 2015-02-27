@@ -1,3 +1,11 @@
 # CERN-views
 
 utilities for viewing CERN information
+
+# quick start
+
+```Bash
+git clone https://github.com/wdbm/CERN-views.git
+cd CERN-views
+wget https://raw.githubusercontent.com/wdbm/shijian/master/shijian.py
+```
