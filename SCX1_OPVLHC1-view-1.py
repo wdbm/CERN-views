@@ -33,7 +33,7 @@
 """
 
 name    = "SCX1-view-2"
-version = "2015-04-05T0759Z"
+version = "2015-04-05T0806Z"
 
 def smuggle(
     moduleName = None,
@@ -60,6 +60,7 @@ def smuggle(
             )
             sys.exit()
 
+import time
 import os
 import urllib
 import imp
