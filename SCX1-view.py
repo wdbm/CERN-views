@@ -33,11 +33,40 @@
 """
 
 name    = "SCX1-view"
-version = "2015-02-27T2307Z"
+version = "2015-04-07T2244Z"
+
+def smuggle(
+    moduleName = None,
+    URL        = None
+    ):
+    if moduleName is None:
+        moduleName = URL
+    try:
+        module = __import__(moduleName)
+        return(module)
+    except:
+        try:
+            moduleString = urllib.urlopen(URL).read()
+            module = imp.new_module("module")
+            exec moduleString in module.__dict__
+            return(module)
+        except: 
+            raise(
+                Exception(
+                    "module {moduleName} import error".format(
+                        moduleName = moduleName
+                    )
+                )
+            )
+            sys.exit()
 
 import urllib
+import imp
 import time
-import shijian
+shijian = smuggle(
+    moduleName = "shijian",
+    URL = "https://rawgit.com/wdbm/shijian/master/shijian.py"
+)
 
 def main():
 

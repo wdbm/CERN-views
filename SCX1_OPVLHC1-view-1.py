@@ -3,13 +3,14 @@
 """
 ################################################################################
 #                                                                              #
-# SCX1-view-2                                                                  #
+# SCX1_OPVLHC1-view-1                                                          #
 #                                                                              #
 ################################################################################
 #                                                                              #
 # LICENCE INFORMATION                                                          #
 #                                                                              #
-# This program is an automated web login program.                              #
+# This program is a way of recording views of the ATLAS Control Room and OP    #
+# Vistars pages.                                                               #
 #                                                                              #
 # copyright (C) 2015 William Breaden Madden                                    #
 #                                                                              #
@@ -32,8 +33,8 @@
 ################################################################################
 """
 
-name    = "SCX1-view-2"
-version = "2015-04-05T0806Z"
+name    = "SCX1_OPVLHC1-view-1"
+version = "2015-04-07T2245Z"
 
 def smuggle(
     moduleName = None,
@@ -60,10 +61,10 @@ def smuggle(
             )
             sys.exit()
 
-import time
-import os
 import urllib
 import imp
+import os
+import time
 from selenium import webdriver
 from selenium.webdriver.common.keys import Keys
 #from selenium.webdriver.common.action_chains import ActionChains
