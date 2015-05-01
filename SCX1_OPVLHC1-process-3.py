@@ -3,7 +3,7 @@
 """
 ################################################################################
 #                                                                              #
-# SCX1_OPVLHC1-process-2                                                       #
+# SCX1_OPVLHC1-view-3                                                          #
 #                                                                              #
 ################################################################################
 #                                                                              #
@@ -33,12 +33,13 @@
 ################################################################################
 """
 
-name    = "SCX1_OPVLHC1-process-2"
-version = "2015-05-01t1608Z"
+name    = "SCX1_OPVLHC1-view-3"
+version = "2015-05-01T1236Z"
 
 import smuggle
 import os
 import time
+from   moviepy.editor import *
 shijian = smuggle.smuggle(
     moduleName = "shijian",
     URL = "https://rawgit.com/wdbm/shijian/master/shijian.py"
@@ -87,15 +88,41 @@ def main():
         print(commandTile)
         os.system(commandTile)
 
-    # Create animation of tile images.
-    commandAnimation = \
-        "convert -layers optimize -delay 35 -loop 0 *_tile.png " + \
-        "{fileBaseName}.gif"
-    commandAnimation = commandAnimation.format(
-        fileBaseName = shijian.time_UTC() + "_animation"
+    ## Create animation of tile images.
+    #commandAnimation = \
+    #    "convert -layers optimize -delay 35 -loop 0 *_tile.png " + \
+    #    "{fileBaseName}.gif"
+    #commandAnimation = commandAnimation.format(
+    #    fileBaseName = shijian.time_UTC() + "_animation"
+    #)
+    #raw_input("Press Enter to create animation.")
+    #os.system(commandAnimation)
+
+    # Create a video clip for each image.
+    videoClips = []
+    imageDurations = []
+    for imageNumber in range(0, numberOfTiledImagesToCreate):
+        imageImageFileName = str(imageNumber) + "_tile.png"
+        imageClip = ImageClip(imageImageFileName)
+        duration  = 0.1
+        videoClip = imageClip.set_duration(duration)
+        # Determine the image start time by calculating the sum of the durations
+        # of all previous images.
+        if imageNumber != 0:
+            videoStartTime = sum(imageDurations[0:imageNumber])
+        else:
+            videoStartTime = 0
+        videoClip = videoClip.set_start(videoStartTime)
+        videoClips.append(videoClip)
+        imageDurations.append(duration)
+    fullDuration = sum(imageDurations)
+    video = concatenate(videoClips)
+    video.write_videofile(
+        "video.mp4",
+        fps         = 30,
+        codec       = "mpeg4",
+        audio_codec = "libvorbis"
     )
-    raw_input("Press Enter to create animation.")
-    os.system(commandAnimation)
 
 if __name__ == "__main__":
     main()
