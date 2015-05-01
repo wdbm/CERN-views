@@ -34,7 +34,7 @@
 """
 
 name    = "SCX1_OPVLHC1-process-2"
-version = "2015-04-30T1701Z"
+version = "2015-05-01T1045Z"
 
 import smuggle
 import os
@@ -71,11 +71,15 @@ def main():
     for index in range(0, numberOfTiledImagesToCreate):
         commandTile = \
             "montage " + \
+            "logo.png " + \
             "{timestamp}_ACR02.png " + \
             "{timestamp}_ACR01.png " + \
             "{timestamp}_LHC1.png "  + \
             "{timestamp}_LHC_dashboard.png " + \
-            "-mode Concatenate -tile 2x2 {index}_tile.png"
+            "null: " + \
+            "-mode Concatenate " + \
+            "-tile 3x3 " + \
+            "{index}_tile.png"
         commandTile = commandTile.format(
             timestamp = listOfTimestampsOrdered[index],
             index     = index
