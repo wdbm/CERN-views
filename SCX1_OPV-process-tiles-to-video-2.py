@@ -34,7 +34,7 @@
 """
 
 name    = "SCX1_OPV-process-tiles-to-video-2"
-version = "2015-05-02T0939Z"
+version = "2015-05-02T1014Z"
 
 import os
 import time
@@ -49,11 +49,13 @@ def ls_files(
     )])
 
 def sort_alphanumeric(
-    l
+    unsortedList = None
     ): 
     convert = lambda text: int(text) if text.isdigit() else text 
-    alphanumericKey = lambda key: [ convert(c) for c in re.split('([0-9]+)', key) ] 
-    return sorted(l, key = alphanumericKey)
+    alphanumericKey = lambda key: [
+        convert(c) for c in re.split('([0-9]+)', key)
+    ]
+    return(sorted(unsortedList, key = alphanumericKey))
 
 def main():
 
