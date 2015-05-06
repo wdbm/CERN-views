@@ -34,7 +34,7 @@
 """
 
 name    = "process_tiles_to_video_ACR_OPV"
-version = "2015-05-02T1053Z"
+version = "2015-05-05T1323Z"
 
 import os
 import time
@@ -66,12 +66,22 @@ def main():
     listOfTileImageFiles = sort_alphanumeric(listOfTileImageFiles)
     numberOfTiledImages = len(listOfTileImageFiles)
 
-    video = ImageSequenceClip(listOfTileImageFiles, fps = 20)
+    ## no sound and low quality:
+    #video.write_videofile(
+    #    "video.mp4",
+    #    fps         = 30,
+    #    codec       = "mpeg4",
+    #    audio_codec = "libvorbis"
+    #)
+
+    # sound and high quality:
+    soundTrack = AudioFileClip("soundtrack.wav")
+    video = video.set_audio(soundTrack)
     video.write_videofile(
-        "video.mp4",
-        fps         = 30,
-        codec       = "mpeg4",
-        audio_codec = "libvorbis"
+        "video.avi",
+        fps         = 20,
+        codec       = "png",
+        audio       = True
     )
 
 if __name__ == "__main__":
