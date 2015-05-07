@@ -57,7 +57,7 @@ URL_ACR01 = "https://atlasop.cern.ch/ATLASview/webpic/ACR01.jpg"
 URL_ACR02 = "https://atlasop.cern.ch/ATLASview/webpic/ACR02.jpg"
 URL_ATLAS_detector_status = \
     "https://atlasop.cern.ch/overview/dcs/snapshots/ATLAS.png"
-URL_ATLANTIS = "https://atlas-live.cern.ch/latest"
+URL_Atlantis = "https://atlas-live.cern.ch/latest"
 URL_LHC1  = "http://vistar-capture.web.cern.ch/vistar-capture/lhc1.png"
 URL_LHC2  = "http://vistar-capture.web.cern.ch/vistar-capture/lhc2.png"
 URL_LHC3  = "http://vistar-capture.web.cern.ch/vistar-capture/lhc3.png"
