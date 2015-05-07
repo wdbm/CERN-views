@@ -34,7 +34,7 @@
 """
 
 name    = "record_ACR_OPV_auto-SSO"
-version = "2015-05-04T1257Z"
+version = "2015-05-07T1529Z"
 
 import smuggle
 import urllib
@@ -55,6 +55,9 @@ URLlogin       = "https://login.cern.ch"
 URL_ACR   = "https://atlasop.cern.ch/ATLASview/ACR.htm"
 URL_ACR01 = "https://atlasop.cern.ch/ATLASview/webpic/ACR01.jpg"
 URL_ACR02 = "https://atlasop.cern.ch/ATLASview/webpic/ACR02.jpg"
+URL_ATLAS_detector_status = \
+    "https://atlasop.cern.ch/overview/dcs/snapshots/ATLAS.png"
+URL_ATLANTIS = "https://atlas-live.cern.ch/latest"
 URL_LHC1  = "http://vistar-capture.web.cern.ch/vistar-capture/lhc1.png"
 URL_LHC2  = "http://vistar-capture.web.cern.ch/vistar-capture/lhc2.png"
 URL_LHC3  = "http://vistar-capture.web.cern.ch/vistar-capture/lhc3.png"
@@ -96,11 +99,13 @@ def main():
         driver.set_window_size(801, 674)
         
         driver.get(URL_ACR01)
+        time.sleep(2)
         driver.save_screenshot(shijian.proposeFileName(
             fileName = timestamp + "_ACR01.png"
         ))
 
         driver.get(URL_ACR02)
+        time.sleep(2)
         driver.save_screenshot(shijian.proposeFileName(
             fileName = timestamp + "_ACR02.png"
         ))
@@ -150,7 +155,7 @@ def authenticate():
 
     driver.get(URLlogin)
 
-    time.sleep(4)
+    time.sleep(6)
 
     if "authentication" in driver.title.lower() and "management" not in driver.title.lower():
 
