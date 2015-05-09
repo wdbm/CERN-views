@@ -34,7 +34,7 @@
 """
 
 name    = "process_tiles_to_video_ACR_OPV"
-version = "2015-05-05T1323Z"
+version = "2015-05-09T1157Z"
 
 import os
 import time
@@ -74,14 +74,14 @@ def main():
     #    audio_codec = "libvorbis"
     #)
 
-    # sound and high quality:
-    soundTrack = AudioFileClip("soundtrack.wav")
-    video = video.set_audio(soundTrack)
+    ## sound and high quality:
+    #soundTrack = AudioFileClip("soundtrack.wav")
+    #video = video.set_audio(soundTrack)
     video.write_videofile(
         "video.avi",
         fps         = 20,
         codec       = "png",
-        audio       = True
+        audio       = False#True
     )
 
 if __name__ == "__main__":

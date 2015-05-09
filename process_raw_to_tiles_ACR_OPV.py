@@ -34,7 +34,7 @@
 """
 
 name    = "process_raw_to_tiles_ACR_OPV"
-version = "2015-05-02T1052Z"
+version = "2015-05-09T1158Z"
 
 import smuggle
 import os
@@ -71,7 +71,7 @@ def main():
     for index in range(0, numberOfTiledImagesToCreate):
         commandTile = \
             "montage " + \
-            "logo.png " + \
+            "logo_ATLAS_2.png " + \
             "{timestamp}_ACR02.png " + \
             "{timestamp}_ACR01.png " + \
             "{timestamp}_LHC1.png "  + \

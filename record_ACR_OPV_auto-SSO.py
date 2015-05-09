@@ -34,7 +34,7 @@
 """
 
 name    = "record_ACR_OPV_auto-SSO"
-version = "2015-05-07T1529Z"
+version = "2015-05-09T1204Z"
 
 import smuggle
 import urllib
@@ -57,7 +57,7 @@ URL_ACR01 = "https://atlasop.cern.ch/ATLASview/webpic/ACR01.jpg"
 URL_ACR02 = "https://atlasop.cern.ch/ATLASview/webpic/ACR02.jpg"
 URL_ATLAS_detector_status = \
     "https://atlasop.cern.ch/overview/dcs/snapshots/ATLAS.png"
-URL_Atlantis = "https://atlas-live.cern.ch/latest"
+URL_Atlantis = "https://atlas-live.cern.ch/event_files/MinBias/latest.png"
 URL_LHC1  = "http://vistar-capture.web.cern.ch/vistar-capture/lhc1.png"
 URL_LHC2  = "http://vistar-capture.web.cern.ch/vistar-capture/lhc2.png"
 URL_LHC3  = "http://vistar-capture.web.cern.ch/vistar-capture/lhc3.png"
@@ -75,8 +75,8 @@ def main():
     # Create two clocks, one to define the total recording time and the other
     # to define the duration between running authentication procedures.
 
-    recording_duration_in_seconds      = 28000 # 8 hours
-    authentication_duration_in_seconds = 600   # 10 minutes
+    recording_duration_in_seconds      = 604800 # 1 week
+    authentication_duration_in_seconds = 600    # 10 minutes
 
     clock_recording_duration = shijian.Clock(
         name = "recording duration"
@@ -144,6 +144,20 @@ def main():
             URL_LHC_dashboard_hd,
             shijian.proposeFileName(
                 fileName = timestamp + "_LHC_dashboard-hd.png"
+            )
+        )
+
+        urllib.urlretrieve(
+            URL_ATLAS_detector_status,
+            shijian.proposeFileName(
+                fileName = timestamp + "_ATLAS_detector_status.png"
+            )
+        )
+
+        urllib.urlretrieve(
+            URL_Atlantis,
+            shijian.proposeFileName(
+                fileName = timestamp + "_URL_Atlantis.png"
             )
         )
 
