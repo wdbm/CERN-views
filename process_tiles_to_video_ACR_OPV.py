@@ -34,7 +34,7 @@
 """
 
 name    = "process_tiles_to_video_ACR_OPV"
-version = "2015-05-09T1157Z"
+version = "2015-05-09T1358Z"
 
 import os
 import time
@@ -64,7 +64,9 @@ def main():
         if "_tile.png" in fileName
     ]
     listOfTileImageFiles = sort_alphanumeric(listOfTileImageFiles)
-    numberOfTiledImages = len(listOfTileImageFiles)
+    #numberOfTiledImages = len(listOfTileImageFiles)
+
+    video = ImageSequenceClip(listOfTileImageFiles, fps = 20)
 
     ## no sound and low quality:
     #video.write_videofile(
