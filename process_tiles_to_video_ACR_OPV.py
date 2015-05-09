@@ -34,7 +34,7 @@
 """
 
 name    = "process_tiles_to_video_ACR_OPV"
-version = "2015-05-09T1358Z"
+version = "2015-05-09T1407Z"
 
 import os
 import time
@@ -71,7 +71,7 @@ def main():
     ## no sound and low quality:
     #video.write_videofile(
     #    "video.mp4",
-    #    fps         = 30,
+    #    fps         = 10,
     #    codec       = "mpeg4",
     #    audio_codec = "libvorbis"
     #)
@@ -81,7 +81,7 @@ def main():
     #video = video.set_audio(soundTrack)
     video.write_videofile(
         "video.avi",
-        fps         = 20,
+        fps         = 10,
         codec       = "png",
         audio       = False#True
     )
