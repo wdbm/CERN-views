@@ -34,13 +34,14 @@
 """
 
 name    = "record_ACR_OPV_auto-SSO"
-version = "2015-05-09T1204Z"
+version = "2015-05-10T1525Z"
 
 import smuggle
 import urllib
 import imp
 import os
 import time
+import getpass
 from selenium import webdriver
 from selenium.webdriver.common.keys import Keys
 shijian = smuggle.smuggle(
@@ -48,9 +49,7 @@ shijian = smuggle.smuggle(
     URL = "https://rawgit.com/wdbm/shijian/master/shijian.py"
 )
 
-identification = "User999"
-passcode       = "wanknob"
-URLlogin       = "https://login.cern.ch"
+URLlogin  = "https://login.cern.ch"
 
 URL_ACR   = "https://atlasop.cern.ch/ATLASview/ACR.htm"
 URL_ACR01 = "https://atlasop.cern.ch/ATLASview/webpic/ACR01.jpg"
@@ -66,9 +65,17 @@ URL_LHC_dashboard = "http://lhcdashboard-images.web.cern.ch/" + \
 URL_LHC_dashboard_hd = "http://lhcdashboard-images.web.cern.ch/" + \
     "lhcdashboard-images/images/lhc/prod/dashboard-hd.png"
 
-driver = webdriver.Firefox()
-
 def main():
+
+    global identification
+    global passcode
+
+    identification = getpass.getpass(prompt = "enter username: ")
+    passcode       = getpass.getpass(prompt = "enter passcode: ")
+
+    global driver
+
+    driver = webdriver.Firefox()
 
     authenticate()
 
@@ -147,19 +154,25 @@ def main():
             )
         )
 
-        urllib.urlretrieve(
-            URL_ATLAS_detector_status,
-            shijian.proposeFileName(
-                fileName = timestamp + "_ATLAS_detector_status.png"
-            )
-        )
+        # access ATLAS detector status
 
-        urllib.urlretrieve(
-            URL_Atlantis,
-            shijian.proposeFileName(
-                fileName = timestamp + "_URL_Atlantis.png"
-            )
-        )
+        driver.set_window_size(865, 942)
+
+        driver.get(URL_ATLAS_detector_status)
+        time.sleep(2)
+        driver.save_screenshot(shijian.proposeFileName(
+            fileName = timestamp + "_ATLAS_detector_status.png"
+        ))
+
+        # access Atlantis
+
+        driver.set_window_size(933, 800)
+
+        driver.get(URL_Atlantis)
+        time.sleep(2)
+        driver.save_screenshot(shijian.proposeFileName(
+            fileName = timestamp + "_Atlantis.png"
+        ))
 
         time.sleep(60)
 
