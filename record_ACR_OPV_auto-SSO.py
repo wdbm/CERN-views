@@ -1,5 +1,5 @@
 #!/usr/bin/env python
-
+from __future__ import print_function
 """
 ################################################################################
 #                                                                              #
@@ -34,7 +34,7 @@
 """
 
 name    = "record_ACR_OPV_auto-SSO"
-version = "2015-05-10T1525Z"
+version = "2015-05-10T1805Z"
 
 import smuggle
 import urllib
@@ -67,6 +67,8 @@ URL_LHC_dashboard_hd = "http://lhcdashboard-images.web.cern.ch/" + \
 
 def main():
 
+    print("\n" + name + "\n")
+
     global identification
     global passcode
 
@@ -79,11 +81,13 @@ def main():
 
     authenticate()
 
-    # Create two clocks, one to define the total recording time and the other
-    # to define the duration between running authentication procedures.
+    # Create clocks, one to define the total recording time, another to define
+    # the duration between running authentication procedures and another to
+    # define the time between recording "snapshots".
 
     recording_duration_in_seconds      = 604800 # 1 week
     authentication_duration_in_seconds = 600    # 10 minutes
+    snapshot_duration_in_seconds       = 60     # 1 minute
 
     clock_recording_duration = shijian.Clock(
         name = "recording duration"
@@ -91,6 +95,11 @@ def main():
     clock_authentication_duration = shijian.Clock(
         name = "authentication duration"
     )
+    clock_snapshot_duration = shijian.Clock(
+        name = "snapshot duration"
+    )
+
+    print("start recording -- Ctrl C to stop")
 
     while clock_recording_duration.time() <= recording_duration_in_seconds:
 
@@ -99,86 +108,104 @@ def main():
             clock_authentication_duration.reset()
             clock_authentication_duration.start()
 
-        timestamp = str(shijian.time_UNIX())
+        if clock_snapshot_duration.time() >= snapshot_duration_in_seconds:
 
-        # access ACR
-        
-        driver.set_window_size(801, 674)
-        
-        driver.get(URL_ACR01)
-        time.sleep(2)
-        driver.save_screenshot(shijian.proposeFileName(
-            fileName = timestamp + "_ACR01.png"
-        ))
+            print("\rtake snapshot", end = "")
 
-        driver.get(URL_ACR02)
-        time.sleep(2)
-        driver.save_screenshot(shijian.proposeFileName(
-            fileName = timestamp + "_ACR02.png"
-        ))
+            timestamp = str(shijian.time_UNIX())
 
-        # access LHC
+            # access ACR
 
-        urllib.urlretrieve(
-            URL_LHC1,
-            shijian.proposeFileName(
-                fileName = timestamp + "_LHC1.png"
+            driver.set_window_size(801, 674)
+
+            driver.get(URL_ACR01)
+            time.sleep(2)
+            driver.save_screenshot(shijian.proposeFileName(
+                fileName = timestamp + "_ACR01.png"
+            ))
+
+            driver.get(URL_ACR02)
+            time.sleep(2)
+            driver.save_screenshot(shijian.proposeFileName(
+                fileName = timestamp + "_ACR02.png"
+            ))
+
+            # access LHC
+
+            urllib.urlretrieve(
+                URL_LHC1,
+                shijian.proposeFileName(
+                    fileName = timestamp + "_LHC1.png"
+                )
             )
-        )
 
-        urllib.urlretrieve(
-            URL_LHC2,
-            shijian.proposeFileName(
-                fileName = timestamp + "_LHC2.png"
+            urllib.urlretrieve(
+                URL_LHC2,
+                shijian.proposeFileName(
+                    fileName = timestamp + "_LHC2.png"
+                )
             )
-        )
 
-        urllib.urlretrieve(
-            URL_LHC3,
-            shijian.proposeFileName(
-                fileName = timestamp + "_LHC3.png"
+            urllib.urlretrieve(
+                URL_LHC3,
+                shijian.proposeFileName(
+                    fileName = timestamp + "_LHC3.png"
+                )
             )
-        )
 
-        urllib.urlretrieve(
-            URL_LHC_dashboard,
-            shijian.proposeFileName(
-                fileName = timestamp + "_LHC_dashboard.png"
+            urllib.urlretrieve(
+                URL_LHC_dashboard,
+                shijian.proposeFileName(
+                    fileName = timestamp + "_LHC_dashboard.png"
+                )
             )
-        )
 
-        urllib.urlretrieve(
-            URL_LHC_dashboard_hd,
-            shijian.proposeFileName(
-                fileName = timestamp + "_LHC_dashboard-hd.png"
+            urllib.urlretrieve(
+                URL_LHC_dashboard_hd,
+                shijian.proposeFileName(
+                    fileName = timestamp + "_LHC_dashboard-hd.png"
+                )
             )
-        )
 
-        # access ATLAS detector status
+            # access ATLAS detector status
 
-        driver.set_window_size(865, 942)
+            driver.set_window_size(865, 942)
 
-        driver.get(URL_ATLAS_detector_status)
-        time.sleep(2)
-        driver.save_screenshot(shijian.proposeFileName(
-            fileName = timestamp + "_ATLAS_detector_status.png"
-        ))
+            driver.get(URL_ATLAS_detector_status)
+            time.sleep(2)
+            driver.save_screenshot(shijian.proposeFileName(
+                fileName = timestamp + "_ATLAS_detector_status.png"
+            ))
 
-        # access Atlantis
+            # access Atlantis
 
-        driver.set_window_size(933, 800)
+            driver.set_window_size(933, 800)
 
-        driver.get(URL_Atlantis)
-        time.sleep(2)
-        driver.save_screenshot(shijian.proposeFileName(
-            fileName = timestamp + "_Atlantis.png"
-        ))
+            driver.get(URL_Atlantis)
+            time.sleep(2)
+            driver.save_screenshot(shijian.proposeFileName(
+                fileName = timestamp + "_Atlantis.png"
+            ))
 
-        time.sleep(60)
+            clock_snapshot_duration.reset()
+            clock_snapshot_duration.start()
+
+        else:
+
+            print("\rtime to next snapshot: {timeToNextSnapshot} s".format(
+                timeToNextSnapshot =\
+                    snapshot_duration_in_seconds -\
+                    int(clock_snapshot_duration.time()
+                ),
+                end = "")
+            )
+            time.sleep(1)
 
     driver.close()
 
 def authenticate():
+
+    print("authenticate")
 
     driver.get(URLlogin)
 
@@ -193,7 +220,7 @@ def authenticate():
         inputPasscode.send_keys(passcode)
         inputPasscode.send_keys(Keys.RETURN)
 
-    time.sleep(2)
+    time.sleep(3)
 
 if __name__ == "__main__":
     main()
