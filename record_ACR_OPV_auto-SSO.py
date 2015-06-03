@@ -34,7 +34,7 @@ from __future__ import print_function
 """
 
 name    = "record_ACR_OPV_auto-SSO"
-version = "2015-05-10T1805Z"
+version = "2015-06-03T1146Z"
 
 import smuggle
 import urllib
@@ -64,6 +64,8 @@ URL_LHC_dashboard = "http://lhcdashboard-images.web.cern.ch/" + \
     "lhcdashboard-images/images/lhc/prod/dashboard.png"
 URL_LHC_dashboard_hd = "http://lhcdashboard-images.web.cern.ch/" + \
     "lhcdashboard-images/images/lhc/prod/dashboard-hd.png"
+URL_LHC_BSRT = "http://cs-ccr-www3.cern.ch/vistar_capture/lhcbsrt.png"
+URL_LHC_CTF3 = "http://cs-ccr-www3.cern.ch/vistar_capture/ctfgen.png"
 
 def main():
 
@@ -164,6 +166,20 @@ def main():
                 URL_LHC_dashboard_hd,
                 shijian.proposeFileName(
                     fileName = timestamp + "_LHC_dashboard-hd.png"
+                )
+            )
+
+            urllib.urlretrieve(
+                URL_LHC_BSRT,
+                shijian.proposeFileName(
+                    fileName = timestamp + "_LHC_BSRT.png"
+                )
+            )
+
+            urllib.urlretrieve(
+                URL_LHC_CTF3,
+                shijian.proposeFileName(
+                    fileName = timestamp + "_LHC_CTF3.png"
                 )
             )
 
