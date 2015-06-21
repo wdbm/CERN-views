@@ -34,7 +34,7 @@ from __future__ import print_function
 """
 
 name    = "record_ACR_OPV_auto-SSO"
-version = "2015-06-03T1146Z"
+version = "2015-06-21T1757Z"
 
 import smuggle
 import urllib
@@ -66,6 +66,14 @@ URL_LHC_dashboard_hd = "http://lhcdashboard-images.web.cern.ch/" + \
     "lhcdashboard-images/images/lhc/prod/dashboard-hd.png"
 URL_LHC_BSRT = "http://cs-ccr-www3.cern.ch/vistar_capture/lhcbsrt.png"
 URL_LHC_CTF3 = "http://cs-ccr-www3.cern.ch/vistar_capture/ctfgen.png"
+
+URL_OD01          = "https://atlasop.cern.ch/ATLASview/webpic/OD01.jpg"
+URL_OD02          = "https://atlasop.cern.ch/ATLASview/webpic/OD02.jpg"
+URL_UX15SideA02HD = "https://atlasop.cern.ch/ATLASview/webpic/UX15SideA02HD.jpg"
+URL_UX15SideA04HD = "https://atlasop.cern.ch/ATLASview/webpic/UX15SideA04HD.jpg"
+URL_UX15SideC01HD = "https://atlasop.cern.ch/ATLASview/webpic/UX15SideC01HD.jpg"
+URL_UX15SideC03HD = "https://atlasop.cern.ch/ATLASview/webpic/UX15SideC03HD.jpg"
+URL_SX1HD01       = "https://atlasop.cern.ch/ATLASview/webpic/SX1HD01.jpg"
 
 def main():
 
