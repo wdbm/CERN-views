@@ -31,4 +31,8 @@ A possible checklist before recording is as follows:
 
 # OPVV-1
 
-OP Vistars multiplex view: <http://htmlpreview.github.io/?https://raw.githubusercontent.com/wdbm/CERN-views/master/OPVV-1.html>
+- OP Vistars multiplex view: <http://htmlpreview.github.io/?https://raw.githubusercontent.com/wdbm/CERN-views/master/OPVV-1.html>
+
+# ATLAS-1
+
+- LHC status, ATLAS status, ATLAS event display multiplex view: <http://htmlpreview.github.io/?https://raw.githubusercontent.com/wdbm/CERN-views/master/ATLAS-1.html>
