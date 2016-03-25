@@ -34,7 +34,7 @@
 """
 
 name    = "process_tiles_to_video_ACR_OPV_2"
-version = "2015-06-06T1135Z"
+version = "2016-03-25T1115Z"
 
 import os
 import time
@@ -44,33 +44,33 @@ from   moviepy.editor import *
 def ls_files(
     path = "."
     ):
-    return([fileName for fileName in os.listdir(path) if os.path.isfile(
-        os.path.join(path, fileName)
+    return([filename for filename in os.listdir(path) if os.path.isfile(
+        os.path.join(path, filename)
     )])
 
 def sort_alphanumeric(
-    unsortedList = None
+    unsorted_list = None
     ): 
     convert = lambda text: int(text) if text.isdigit() else text 
-    alphanumericKey = lambda key: [
+    alphanumeric_key = lambda key: [
         convert(c) for c in re.split('([0-9]+)', key)
     ]
-    return(sorted(unsortedList, key = alphanumericKey))
+    return(sorted(unsorted_list, key = alphanumeric_key))
 
 def main():
 
-    listOfFiles = ls_files()
-    listOfTileImageFiles = [fileName for fileName in listOfFiles \
-        if "_tile.png" in fileName
+    list_of_files = ls_files()
+    list_of_tile_image_files = [filename for filename in list_of_files \
+        if "_tile.png" in filename
     ]
-    listOfTileImageFiles = sort_alphanumeric(listOfTileImageFiles)
-    numberOfTiledImages = len(listOfTileImageFiles)
+    list_of_tile_image_files = sort_alphanumeric(list_of_tile_image_files)
+    number_of_tiled_images = len(list_of_tile_image_files)
 
-    listOfTileImageFiles = listOfTileImageFiles[:numberOfTiledImages - 2]
-    #for image in listOfTileImageFiles:
+    list_of_tile_image_files = list_of_tile_image_files[:number_of_tiled_images - 2]
+    #for image in list_of_tile_image_files:
     #    print(image)
 
-    video = ImageSequenceClip(listOfTileImageFiles, fps = 10)
+    video = ImageSequenceClip(list_of_tile_image_files, fps = 10)
 
     #raw_input("Press Enter to write video.")
 
@@ -83,8 +83,8 @@ def main():
     #)
 
     ## sound and high quality:
-    #soundTrack = AudioFileClip("soundtrack.wav")
-    #video = video.set_audio(soundTrack)
+    #sound_track = AudioFileClip("sound_track.wav")
+    #video = video.set_audio(sound_track)
     video.write_videofile(
         "video.avi",
         fps         = 10,

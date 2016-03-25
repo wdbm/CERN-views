@@ -34,42 +34,39 @@
 """
 
 name    = "process_raw_to_tiles_ACR_OPV"
-version = "2015-05-09T1158Z"
+version = "2016-03-25T1050Z"
 
 import smuggle
 import os
 import time
-shijian = smuggle.smuggle(
-    moduleName = "shijian",
-    URL = "https://rawgit.com/wdbm/shijian/master/shijian.py"
-)
+import shijian
 
 def ls_files(
     path = "."
     ):
-    return([fileName for fileName in os.listdir(path) if os.path.isfile(
-        os.path.join(path, fileName)
+    return([filename for filename in os.listdir(path) if os.path.isfile(
+        os.path.join(path, filename)
     )])
 
 def main():
 
-    listOfFiles = ls_files()
-    listOfImageFiles = [fileName for fileName in listOfFiles \
-        if ".png" in fileName
+    list_of_files = ls_files()
+    list_of_image_files = [filename for filename in list_of_files \
+        if ".png" in filename
     ]
-    listOfACR01ImageFiles = [fileName for fileName in listOfImageFiles \
-        if "ACR01" in fileName
+    list_of_ACR01_image_files = [filename for filename in list_of_image_files \
+        if "ACR01" in filename
     ]
-    listOfTimestamps = [
-        fileName.split("_")[0] for fileName in listOfACR01ImageFiles
+    list_of_timestamps = [
+        filename.split("_")[0] for filename in list_of_ACR01_image_files
     ]
-    listOfTimestampsOrdered = sorted(listOfTimestamps)
-    numberOfTiledImagesToCreate = len(listOfTimestamps)
+    list_of_timestamps_ordered = sorted(list_of_timestamps)
+    number_of_tiled_images_to_create = len(list_of_timestamps)
     
     # Create tile images.
     raw_input("Press Enter to create tile images.")
-    for index in range(0, numberOfTiledImagesToCreate):
-        commandTile = \
+    for index in range(0, number_of_tiled_images_to_create):
+        command_tile = \
             "montage " + \
             "logo_ATLAS_2.png " + \
             "{timestamp}_ACR02.png " + \
@@ -80,12 +77,12 @@ def main():
             "-mode Concatenate " + \
             "-tile 3x3 " + \
             "{index}_tile.png"
-        commandTile = commandTile.format(
-            timestamp = listOfTimestampsOrdered[index],
+        command_tile = command_tile.format(
+            timestamp = list_of_timestamps_ordered[index],
             index     = index
         )
-        print(commandTile)
-        os.system(commandTile)
+        print(command_tile)
+        os.system(command_tile)
 
 if __name__ == "__main__":
     main()

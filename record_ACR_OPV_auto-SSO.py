@@ -34,7 +34,7 @@ from __future__ import print_function
 """
 
 name    = "record_ACR_OPV_auto-SSO"
-version = "2015-06-21T1757Z"
+version = "2016-03-25T1120Z"
 
 import smuggle
 import urllib
@@ -44,12 +44,9 @@ import time
 import getpass
 from selenium import webdriver
 from selenium.webdriver.common.keys import Keys
-shijian = smuggle.smuggle(
-    moduleName = "shijian",
-    URL = "https://rawgit.com/wdbm/shijian/master/shijian.py"
-)
+import shijian
 
-URLlogin  = "https://login.cern.ch"
+URL_login  = "https://login.cern.ch"
 
 URL_ACR   = "https://atlasop.cern.ch/ATLASview/ACR.htm"
 URL_ACR01 = "https://atlasop.cern.ch/ATLASview/webpic/ACR01.jpg"
@@ -130,64 +127,64 @@ def main():
 
             driver.get(URL_ACR01)
             time.sleep(2)
-            driver.save_screenshot(shijian.proposeFileName(
-                fileName = timestamp + "_ACR01.png"
+            driver.save_screenshot(shijian.propose_filename(
+                filename = timestamp + "_ACR01.png"
             ))
 
             driver.get(URL_ACR02)
             time.sleep(2)
-            driver.save_screenshot(shijian.proposeFileName(
-                fileName = timestamp + "_ACR02.png"
+            driver.save_screenshot(shijian.propose_filename(
+                filename = timestamp + "_ACR02.png"
             ))
 
             # access LHC
 
             urllib.urlretrieve(
                 URL_LHC1,
-                shijian.proposeFileName(
-                    fileName = timestamp + "_LHC1.png"
+                shijian.propose_filename(
+                    filename = timestamp + "_LHC1.png"
                 )
             )
 
             urllib.urlretrieve(
                 URL_LHC2,
-                shijian.proposeFileName(
-                    fileName = timestamp + "_LHC2.png"
+                shijian.propose_filename(
+                    filename = timestamp + "_LHC2.png"
                 )
             )
 
             urllib.urlretrieve(
                 URL_LHC3,
-                shijian.proposeFileName(
-                    fileName = timestamp + "_LHC3.png"
+                shijian.propose_filename(
+                    filename = timestamp + "_LHC3.png"
                 )
             )
 
             urllib.urlretrieve(
                 URL_LHC_dashboard,
-                shijian.proposeFileName(
-                    fileName = timestamp + "_LHC_dashboard.png"
+                shijian.propose_filename(
+                    filename = timestamp + "_LHC_dashboard.png"
                 )
             )
 
             urllib.urlretrieve(
                 URL_LHC_dashboard_hd,
-                shijian.proposeFileName(
-                    fileName = timestamp + "_LHC_dashboard-hd.png"
+                shijian.propose_filename(
+                    filename = timestamp + "_LHC_dashboard-hd.png"
                 )
             )
 
             urllib.urlretrieve(
                 URL_LHC_BSRT,
-                shijian.proposeFileName(
-                    fileName = timestamp + "_LHC_BSRT.png"
+                shijian.propose_filename(
+                    filename = timestamp + "_LHC_BSRT.png"
                 )
             )
 
             urllib.urlretrieve(
                 URL_LHC_CTF3,
-                shijian.proposeFileName(
-                    fileName = timestamp + "_LHC_CTF3.png"
+                shijian.propose_filename(
+                    filename = timestamp + "_LHC_CTF3.png"
                 )
             )
 
@@ -197,8 +194,8 @@ def main():
 
             driver.get(URL_ATLAS_detector_status)
             time.sleep(2)
-            driver.save_screenshot(shijian.proposeFileName(
-                fileName = timestamp + "_ATLAS_detector_status.png"
+            driver.save_screenshot(shijian.propose_filename(
+                filename = timestamp + "_ATLAS_detector_status.png"
             ))
 
             # access Atlantis
@@ -207,8 +204,8 @@ def main():
 
             driver.get(URL_Atlantis)
             time.sleep(2)
-            driver.save_screenshot(shijian.proposeFileName(
-                fileName = timestamp + "_Atlantis.png"
+            driver.save_screenshot(shijian.propose_filename(
+                filename = timestamp + "_Atlantis.png"
             ))
 
             clock_snapshot_duration.reset()
@@ -216,8 +213,8 @@ def main():
 
         else:
 
-            print("\rtime to next snapshot: {timeToNextSnapshot} s".format(
-                timeToNextSnapshot =\
+            print("\rtime to next snapshot: {time_to_next_snapshot} s".format(
+                time_to_next_snapshot =\
                     snapshot_duration_in_seconds -\
                     int(clock_snapshot_duration.time()
                 ),
@@ -231,18 +228,18 @@ def authenticate():
 
     print("authenticate")
 
-    driver.get(URLlogin)
+    driver.get(URL_login)
 
     time.sleep(6)
 
     if "authentication" in driver.title.lower() and "management" not in driver.title.lower():
 
-        inputLogin = driver.find_element_by_name("ctl00$ctl00$NICEMasterPageBodyContent$SiteContentPlaceholder$txtFormsLogin")
-        inputLogin.send_keys(identification)
+        input_login = driver.find_element_by_name("ctl00$ctl00$NICEMasterPageBodyContent$SiteContentPlaceholder$txtFormsLogin")
+        input_login.send_keys(identification)
 
-        inputPasscode = driver.find_element_by_name("ctl00$ctl00$NICEMasterPageBodyContent$SiteContentPlaceholder$txtFormsPassword")
-        inputPasscode.send_keys(passcode)
-        inputPasscode.send_keys(Keys.RETURN)
+        input_passcode = driver.find_element_by_name("ctl00$ctl00$NICEMasterPageBodyContent$SiteContentPlaceholder$txtFormsPassword")
+        input_passcode.send_keys(passcode)
+        input_passcode.send_keys(Keys.RETURN)
 
     time.sleep(3)
 

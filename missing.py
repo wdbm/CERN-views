@@ -33,72 +33,69 @@
 """
 
 name    = "missing"
-version = "2015-06-03T1357Z"
+version = "2016-03-25T1049Z"
 
 import smuggle
 import os
 import time
-shijian = smuggle.smuggle(
-    moduleName = "shijian",
-    URL = "https://rawgit.com/wdbm/shijian/master/shijian.py"
-)
+import shijian
 
 def ls_files(
     path = "."
     ):
-    return([fileName for fileName in os.listdir(path) if os.path.isfile(
-        os.path.join(path, fileName)
+    return([filename for filename in os.listdir(path) if os.path.isfile(
+        os.path.join(path, filename)
     )])
 
 def main():
 
-    listOfFiles = ls_files()
-    listOfImageFiles = [fileName for fileName in listOfFiles \
-        if ".png" in fileName
+    list_of_files = ls_files()
+    list_of_image_files = [filename for filename in list_of_files \
+        if ".png" in filename
     ]
-    listOfACR01ImageFiles = [fileName for fileName in listOfImageFiles \
-        if "ACR01" in fileName
+    list_of_ACR01_image_files = [filename for filename in list_of_image_files \
+        if "ACR01" in filename
     ]
-    listOfTimestamps = [
-        fileName.split("_")[0] for fileName in listOfACR01ImageFiles
+    list_of_timestamps = [
+        filename.split("_")[0] for filename in list_of_ACR01_image_files
     ]
-    listOfTimestampsOrdered = sorted(listOfTimestamps)
-    numberOfTiledImagesToCreate = len(listOfTimestamps)
+    list_of_timestamps_ordered = sorted(list_of_timestamps)
+    number_of_tiled_images_to_create = len(list_of_timestamps)
 
-    for index in range(0, numberOfTiledImagesToCreate):
-        listOfFileClassifications = [
+    for index in range(0, number_of_tiled_images_to_create):
+        list_of_file_classifications = [
             "{timestamp}_ACR01.png".format(
-                timestamp = listOfTimestampsOrdered[index]
+                timestamp = list_of_timestamps_ordered[index]
             ),
             "{timestamp}_ACR02.png".format(
-                timestamp = listOfTimestampsOrdered[index]
+                timestamp = list_of_timestamps_ordered[index]
             ),
             "{timestamp}_Atlantis.png".format(
-                timestamp = listOfTimestampsOrdered[index]
+                timestamp = list_of_timestamps_ordered[index]
             ),
             "{timestamp}_LHC1.png".format(
-                timestamp = listOfTimestampsOrdered[index]
+                timestamp = list_of_timestamps_ordered[index]
             ),
             "{timestamp}_LHC_dashboard.png".format(
-                timestamp = listOfTimestampsOrdered[index]
+                timestamp = list_of_timestamps_ordered[index]
             )
         ]
-        for fileName in listOfFileClassifications:
-            if not os.path.isfile(fileName):
-                print("expected file nonexistent, creating blank: {fileName}".format(
-                    fileName = fileName
+        for filename in list_of_file_classifications:
+            if not os.path.isfile(filename):
+                print("expected file nonexistent, creating blank: {filename}".format(
+                    filename = filename
                 ))
-                if "ACR01" in fileName:
-                    command = "cp blank_ACR01.png {fileName}"
-                if "ACR02" in fileName:
-                    command = "cp blank_ACR02.png {fileName}"
-                if "Atlantis" in fileName:
-                    command = "cp blank_Atlantis.png {fileName}"
-                if "LHC1" in fileName:
-                    command = "cp blank_LHC1.png {fileName}"
-                if "LHC_dashboard" in fileName:
-                    command = "cp blank_LHC_dashboard.png {fileName}"
-                os.system(command.format(fileName = fileName))
+                if "ACR01" in filename:
+                    command = "cp blank_ACR01.png {filename}"
+                if "ACR02" in filename:
+                    command = "cp blank_ACR02.png {filename}"
+                if "Atlantis" in filename:
+                    command = "cp blank_Atlantis.png {filename}"
+                if "LHC1" in filename:
+                    command = "cp blank_LHC1.png {filename}"
+                if "LHC_dashboard" in filename:
+                    command = "cp blank_LHC_dashboard.png {filename}"
+                os.system(command.format(filename = filename))
 
 if __name__ == "__main__":
     main()
