@@ -33,9 +33,8 @@
 """
 
 name    = "missing"
-version = "2016-03-25T1049Z"
+version = "2016-03-28T1550Z"
 
-import smuggle
 import os
 import time
 import shijian

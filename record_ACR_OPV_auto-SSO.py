@@ -34,9 +34,8 @@ from __future__ import print_function
 """
 
 name    = "record_ACR_OPV_auto-SSO"
-version = "2016-03-25T1120Z"
+version = "2016-03-28T1549Z"
 
-import smuggle
 import urllib
 import imp
 import os

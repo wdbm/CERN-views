@@ -34,9 +34,8 @@
 """
 
 name    = "process_raw_to_tiles_ACR_OPV_2"
-version = "2016-03-25T1111Z"
+version = "2016-03-28T1549Z"
 
-import smuggle
 import os
 import time
 import shijian
