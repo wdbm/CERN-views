@@ -44,7 +44,7 @@ options:
 """
 
 name    = "process_raw_to_tiles_ACR_OPV"
-version = "2016-03-28T1711Z"
+version = "2016-03-28T1746Z"
 
 import docopt
 import os
@@ -55,11 +55,11 @@ import shijian
 def main(options):
 
     # access options and arguments
-    skip_existing_tiles = string_to_bool(options["--skipexistingtiles"])
-    engage_style_1      = string_to_bool(options["--style1"])
-    engage_style_2      = string_to_bool(options["--style2"])
+    skip_existing_tiles = shijian.string_to_bool(options["--skipexistingtiles"])
+    engage_style_1      = shijian.string_to_bool(options["--style1"])
+    engage_style_2      = shijian.string_to_bool(options["--style2"])
 
-    list_of_files = ls_files()
+    list_of_files = shijian.ls_files()
     list_of_image_files = [filename for filename in list_of_files \
         if ".png" in filename
     ]
@@ -140,16 +140,6 @@ def main(options):
                 )
                 print(command_tile)
                 os.system(command_tile)
-
-def string_to_bool(x):
-    return x.lower() in ("yes", "true", "t", "1")
-
-def ls_files(
-    path = "."
-    ):
-    return([filename for filename in os.listdir(path) if os.path.isfile(
-        os.path.join(path, filename)
-    )])
 
 if __name__ == "__main__":
     options = docopt.docopt(__doc__)
