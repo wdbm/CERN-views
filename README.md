@@ -8,14 +8,15 @@ utilities for viewing CERN information
 # quick start
 
 ```Bash
+sudo pip install docopt
 sudo pip install selenium
-sudo pip install moviepy
 sudo pip install shijian
+sudo pip install moviepy
 git clone https://github.com/wdbm/CERN-views.git
 cd CERN-views
 
 ./record_ACR_OPV_auto-SSO.py
-./process_raw_to_tiles_ACR_OPV.py # or process_raw_to_tiles_ACR_OPV_2.py
+./process_raw_to_tiles_ACR_OPV.py
 ./process_tiles_to_video_ACR_OPV_2.py
 ```
 

@@ -31,23 +31,33 @@
 # <http://www.gnu.org/licenses/>.                                              #
 #                                                                              #
 ################################################################################
+
+usage:
+    program [options]
+
+options:
+    -h, --help                display help message
+    --version                 display version and exit
+    --skipexistingtiles=BOOL  skip existing tiles [default: false]
+    --style1=BOOL             set style 1         [default: true]
+    --style2=BOOL             set style 2         [default: false]
 """
 
 name    = "process_raw_to_tiles_ACR_OPV"
-version = "2016-03-28T1549Z"
+version = "2016-03-28T1711Z"
 
+import docopt
 import os
 import time
+
 import shijian
 
-def ls_files(
-    path = "."
-    ):
-    return([filename for filename in os.listdir(path) if os.path.isfile(
-        os.path.join(path, filename)
-    )])
+def main(options):
 
-def main():
+    # access options and arguments
+    skip_existing_tiles = string_to_bool(options["--skipexistingtiles"])
+    engage_style_1      = string_to_bool(options["--style1"])
+    engage_style_2      = string_to_bool(options["--style2"])
 
     list_of_files = ls_files()
     list_of_image_files = [filename for filename in list_of_files \
@@ -65,23 +75,85 @@ def main():
     # Create tile images.
     raw_input("Press Enter to create tile images.")
     for index in range(0, number_of_tiled_images_to_create):
-        command_tile = \
-            "montage " + \
-            "logo_ATLAS_2.png " + \
-            "{timestamp}_ACR02.png " + \
-            "{timestamp}_ACR01.png " + \
-            "{timestamp}_LHC1.png "  + \
-            "{timestamp}_LHC_dashboard.png " + \
-            "null: " + \
-            "-mode Concatenate " + \
-            "-tile 3x3 " + \
-            "{index}_tile.png"
-        command_tile = command_tile.format(
-            timestamp = list_of_timestamps_ordered[index],
-            index     = index
-        )
-        print(command_tile)
-        os.system(command_tile)
+        filename_tile = "{index}_tile.png".format(index = index)
+        if os.path.isfile(filename_tile) and skip_existing_tiles:
+            print("skip existing file {filename}".format(
+                filename = filename_tile
+            ))
+        else:
+            print("create file {filename}".format(
+                filename = filename_tile
+            ))
+            if engage_style_1:
+                command_tile = \
+                    "montage " + \
+                    "logo_ATLAS_2.png " + \
+                    "{timestamp}_ACR02.png " + \
+                    "{timestamp}_ACR01.png " + \
+                    "{timestamp}_LHC1.png "  + \
+                    "{timestamp}_LHC_dashboard.png " + \
+                    "null: " + \
+                    "-mode Concatenate " + \
+                    "-tile 3x3 " + \
+                    "{index}_tile.png"
+                command_tile = command_tile.format(
+                    timestamp = list_of_timestamps_ordered[index],
+                    index     = index
+                )
+                print(command_tile)
+                os.system(command_tile)
+            if engage_style_2:
+                command_resize_ACR01 = \
+                    "convert " + \
+                    "-geometry x729 " + \
+                    "{timestamp}_ACR01.png " + \
+                    "{timestamp}_ACR01_tmp.png"
+                command_resize_ACR01 = command_resize_ACR01.format(
+                    timestamp = list_of_timestamps_ordered[index],
+                )
+                os.system(command_resize_ACR01)
+                command_resize_ACR02 = \
+                    "convert " + \
+                    "-geometry x729 " + \
+                    "{timestamp}_ACR02.png " + \
+                    "{timestamp}_ACR02_tmp.png"
+                command_resize_ACR02 = command_resize_ACR02.format(
+                    timestamp = list_of_timestamps_ordered[index],
+                )
+                os.system(command_resize_ACR02)
+                command_tile = \
+                    "montage " + \
+                    "{timestamp}_ACR02_tmp.png " + \
+                    "{timestamp}_ACR01_tmp.png " + \
+                    "{timestamp}_Atlantis.png " + \
+                    "logo_ATLAS_3.png " + \
+                    "{timestamp}_LHC1.png "  + \
+                    "{timestamp}_LHC_dashboard.png " + \
+                    "null: " + \
+                    "-mode Concatenate " + \
+                    "-tile 3x3 " + \
+                    "-background black " + \
+                    "{index}_tile.png"
+                command_tile = command_tile.format(
+                    timestamp = list_of_timestamps_ordered[index],
+                    index     = index
+                )
+                print(command_tile)
+                os.system(command_tile)
+
+def string_to_bool(x):
+    return x.lower() in ("yes", "true", "t", "1")
+
+def ls_files(
+    path = "."
+    ):
+    return([filename for filename in os.listdir(path) if os.path.isfile(
+        os.path.join(path, filename)
+    )])
 
 if __name__ == "__main__":
-    main()
+    options = docopt.docopt(__doc__)
+    if options["--version"]:
+        print(version)
+        exit()
+    main(options)
