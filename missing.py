@@ -30,35 +30,43 @@
 # <http://www.gnu.org/licenses/>.                                              #
 #                                                                              #
 ################################################################################
+
+usage:
+    program [options]
+
+options:
+    -h, --help      display help message
+    --version       display version and exit
+    --report=BOOL   report on missing information [default: true]
+    --address=BOOL  address missing information   [default: false]
 """
 
 name    = "missing"
-version = "2016-03-28T1550Z"
+version = "2016-03-29T1219Z"
 
+import docopt
 import os
 import time
+
 import shijian
 
-def ls_files(
-    path = "."
-    ):
-    return([filename for filename in os.listdir(path) if os.path.isfile(
-        os.path.join(path, filename)
-    )])
+def main(options):
 
-def main():
+    # access options and arguments
+    engage_report  = shijian.string_to_bool(options["--report"])
+    engage_address = shijian.string_to_bool(options["--address"])
 
-    list_of_files = ls_files()
+    list_of_files = shijian.ls_files()
     list_of_image_files = [filename for filename in list_of_files \
         if ".png" in filename
     ]
-    list_of_ACR01_image_files = [filename for filename in list_of_image_files \
-        if "ACR01" in filename
+    list_of_LHC1_image_files = [filename for filename in list_of_image_files \
+        if "LHC1" in filename
     ]
     list_of_timestamps = [
-        filename.split("_")[0] for filename in list_of_ACR01_image_files
+        filename.split("_")[0] for filename in list_of_LHC1_image_files
     ]
-    list_of_timestamps_ordered = sorted(list_of_timestamps)
+    list_of_timestamps_ordered       = sorted(list_of_timestamps)
     number_of_tiled_images_to_create = len(list_of_timestamps)
 
     for index in range(0, number_of_tiled_images_to_create):
@@ -75,26 +83,69 @@ def main():
             "{timestamp}_LHC1.png".format(
                 timestamp = list_of_timestamps_ordered[index]
             ),
+            "{timestamp}_LHC2.png".format(
+                timestamp = list_of_timestamps_ordered[index]
+            ),
+            "{timestamp}_LHC3.png".format(
+                timestamp = list_of_timestamps_ordered[index]
+            ),
+            "{timestamp}_LHC_BSRT.png".format(
+                timestamp = list_of_timestamps_ordered[index]
+            ),
+            "{timestamp}_LHC_CTF3.png".format(
+                timestamp = list_of_timestamps_ordered[index]
+            ),
             "{timestamp}_LHC_dashboard.png".format(
+                timestamp = list_of_timestamps_ordered[index]
+            ),
+            "{timestamp}_LHC_dashboard-hd.png".format(
                 timestamp = list_of_timestamps_ordered[index]
             )
         ]
         for filename in list_of_file_classifications:
             if not os.path.isfile(filename):
-                print("expected file nonexistent, creating blank: {filename}".format(
-                    filename = filename
-                ))
-                if "ACR01" in filename:
-                    command = "cp blank_ACR01.png {filename}"
-                if "ACR02" in filename:
-                    command = "cp blank_ACR02.png {filename}"
-                if "Atlantis" in filename:
-                    command = "cp blank_Atlantis.png {filename}"
-                if "LHC1" in filename:
-                    command = "cp blank_LHC1.png {filename}"
-                if "LHC_dashboard" in filename:
-                    command = "cp blank_LHC_dashboard.png {filename}"
-                os.system(command.format(filename = filename))
+                if engage_report and not engage_address:
+                    print("expected file nonexistent: {filename}".format(
+                        filename = filename
+                    ))
+                if engage_report and engage_address:
+                    print("expected file nonexistent, creating blank: {filename}".format(
+                        filename = filename
+                    ))
+                    if "ACR01" in filename:
+                        command = "cp blank_ACR01.png {filename}"
+                        os.system(command.format(filename = filename))
+                    if "ACR02" in filename:
+                        command = "cp blank_ACR02.png {filename}"
+                        os.system(command.format(filename = filename))
+                    if "Atlantis" in filename:
+                        command = "cp blank_Atlantis.png {filename}"
+                        os.system(command.format(filename = filename))
+                    if "LHC1" in filename:
+                        command = "cp blank_LHC1.png {filename}"
+                        os.system(command.format(filename = filename))
+                    if "LHC2" in filename:
+                        command = "cp blank_LHC2.png {filename}"
+                        os.system(command.format(filename = filename))
+                    if "LHC3" in filename:
+                        command = "cp blank_LHC3.png {filename}"
+                        os.system(command.format(filename = filename))
+                    if "LHC_BSRT" in filename:
+                        command = "cp blank_LHC_BSRT.png {filename}"
+                        os.system(command.format(filename = filename))
+                    if "LHC_CTF3" in filename:
+                        command = "cp blank_LHC_CTF3.png {filename}"
+                        os.system(command.format(filename = filename))
+                    if "LHC_dashboard" in filename:
+                        command = "cp blank_LHC_dashboard.png {filename}"
+                        os.system(command.format(filename = filename))
+                    if "LHC_dashboard-hd" in filename:
+                        command = "cp blank_LHC_dashboard-hd.png {filename}"
+                        os.system(command.format(filename = filename))
 
 if __name__ == "__main__":
-    main()
+    options = docopt.docopt(__doc__)
+    if options["--version"]:
+        print(version)
+        exit()
+    main(options)
