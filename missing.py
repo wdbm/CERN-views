@@ -42,12 +42,13 @@ options:
 """
 
 name    = "missing"
-version = "2016-03-29T1219Z"
+version = "2016-03-29T1903Z"
 
 import docopt
 import os
 import time
 
+import datavision
 import shijian
 
 def main(options):
@@ -56,10 +57,39 @@ def main(options):
     engage_report  = shijian.string_to_bool(options["--report"])
     engage_address = shijian.string_to_bool(options["--address"])
 
+    print("\nmissing")
+
     list_of_files = shijian.ls_files()
     list_of_image_files = [filename for filename in list_of_files \
         if ".png" in filename
     ]
+
+    print("\ncheck for problem files\n")
+    progress = shijian.Progress()
+    progress.engage_quick_calculation_mode()
+    possible_problem_filenames = []
+    print("number of images to analyze: {count}".format(
+        count = len(list_of_image_files)
+    ))
+    for index, filename in enumerate(list_of_image_files):
+        print progress.add_datum(fraction = index / len(list_of_image_files)),
+        if os.path.isfile(filename) and filename != "authentication_1.png":
+            RMS = datavision.difference_RMS_images(
+                filename_1 = "authentication_1.png",
+                filename_2 = filename
+            )
+            if RMS is not None and RMS < 1000:
+                possible_problem_filenames.append(filename)
+                #print("possible problem file: {filename}\n".format(
+                #    filename = filename
+                #))
+    if possible_problem_filenames:
+        print("possible problem files:")
+        for possible_problem_filename in possible_problem_filenames:
+            print(possible_problem_filename)
+    else:
+        print("no problem files found")
+
     list_of_LHC1_image_files = [filename for filename in list_of_image_files \
         if "LHC1" in filename
     ]
@@ -102,6 +132,10 @@ def main(options):
                 timestamp = list_of_timestamps_ordered[index]
             )
         ]
+        if engage_report and not engage_address:
+            print("\ncheck for missing files\n")
+        if engage_report and engage_address:
+            print("\ncheck for missing files and address missing files\n")
         for filename in list_of_file_classifications:
             if not os.path.isfile(filename):
                 if engage_report and not engage_address:
