@@ -35,16 +35,19 @@ usage:
     program [options]
 
 options:
-    -h, --help      display help message
-    --version       display version and exit
-    --report=BOOL   report on missing information [default: true]
-    --address=BOOL  address missing information   [default: false]
+    -h, --help                           display help message
+    --version                            display version and exit
+    --report=BOOL                        report on missing information    [default: true]
+    --address=BOOL                       address missing information      [default: false]
+    --checkforproblemfiles=BOOL          check for problem files          [default: true]
+    --checkforproblemfilesdetailed=BOOL  detailed check for problem files [default: false]
 """
 
 name    = "missing"
-version = "2016-03-29T1903Z"
+version = "2016-03-30T0801Z"
 
 import docopt
+import PIL.Image
 import os
 import time
 
@@ -54,8 +57,10 @@ import shijian
 def main(options):
 
     # access options and arguments
-    engage_report  = shijian.string_to_bool(options["--report"])
-    engage_address = shijian.string_to_bool(options["--address"])
+    engage_report                           = shijian.string_to_bool(options["--report"])
+    engage_address                          = shijian.string_to_bool(options["--address"])
+    engage_check_for_problem_files          = shijian.string_to_bool(options["--checkforproblemfiles"])
+    engage_check_for_problem_files_detailed = shijian.string_to_bool(options["--checkforproblemfilesdetailed"])
 
     print("\nmissing")
 
@@ -64,31 +69,40 @@ def main(options):
         if ".png" in filename
     ]
 
-    print("\ncheck for problem files\n")
-    progress = shijian.Progress()
-    progress.engage_quick_calculation_mode()
-    possible_problem_filenames = []
-    print("number of images to analyze: {count}".format(
-        count = len(list_of_image_files)
-    ))
-    for index, filename in enumerate(list_of_image_files):
-        print progress.add_datum(fraction = index / len(list_of_image_files)),
-        if os.path.isfile(filename) and filename != "authentication_1.png":
-            RMS = datavision.difference_RMS_images(
-                filename_1 = "authentication_1.png",
-                filename_2 = filename
-            )
-            if RMS is not None and RMS < 1000:
-                possible_problem_filenames.append(filename)
-                #print("possible problem file: {filename}\n".format(
-                #    filename = filename
-                #))
-    if possible_problem_filenames:
-        print("possible problem files:")
-        for possible_problem_filename in possible_problem_filenames:
-            print(possible_problem_filename)
-    else:
-        print("no problem files found")
+    if engage_check_for_problem_files:
+        print("\ncheck for problem files\n")
+        progress = shijian.Progress()
+        progress.engage_quick_calculation_mode()
+        possible_problem_filenames = []
+        print("number of images to analyze: {count}".format(
+            count = len(list_of_image_files)
+        ))
+        for index, filename in enumerate(list_of_image_files):
+            print progress.add_datum(fraction = index / len(list_of_image_files)),
+            if os.path.isfile(filename) and filename != "authentication_1.png":
+                if engage_check_for_problem_files_detailed:
+                    RMS = datavision.difference_RMS_images(
+                        filename_1 = "authentication_1.png",
+                        filename_2 = filename
+                    )
+                    if RMS is not None and RMS < 1000:
+                        possible_problem_filenames.append(filename)
+                        #print("possible problem file: {filename}\n".format(
+                        #    filename = filename
+                        #))
+                else:
+                    try:
+                        image_1 = PIL.Image.open(filename)
+                        if image_1.size == (789, 922):
+                            possible_problem_filenames.append(filename)
+                    except IOError:
+                        possible_problem_filenames.append(filename)
+        if possible_problem_filenames:
+            print("possible problem files:")
+            for possible_problem_filename in possible_problem_filenames:
+                print(possible_problem_filename)
+        else:
+            print("no problem files found")
 
     list_of_LHC1_image_files = [filename for filename in list_of_image_files \
         if "LHC1" in filename
@@ -99,6 +113,10 @@ def main(options):
     list_of_timestamps_ordered       = sorted(list_of_timestamps)
     number_of_tiled_images_to_create = len(list_of_timestamps)
 
+    if engage_report and not engage_address:
+        print("\ncheck for missing files\n")
+    if engage_report and engage_address:
+        print("\ncheck for missing files and address missing files\n")
     for index in range(0, number_of_tiled_images_to_create):
         list_of_file_classifications = [
             "{timestamp}_ACR01.png".format(
@@ -132,10 +150,6 @@ def main(options):
                 timestamp = list_of_timestamps_ordered[index]
             )
         ]
-        if engage_report and not engage_address:
-            print("\ncheck for missing files\n")
-        if engage_report and engage_address:
-            print("\ncheck for missing files and address missing files\n")
         for filename in list_of_file_classifications:
             if not os.path.isfile(filename):
                 if engage_report and not engage_address:
