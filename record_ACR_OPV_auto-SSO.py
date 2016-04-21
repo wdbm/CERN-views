@@ -1,5 +1,5 @@
 #!/usr/bin/env python
-from __future__ import print_function
+
 """
 ################################################################################
 #                                                                              #
@@ -31,47 +31,59 @@ from __future__ import print_function
 # <http://www.gnu.org/licenses/>.                                              #
 #                                                                              #
 ################################################################################
+
+usage:
+    program [options]
+
+options:
+    -h, --help     display help message
+    --version      display version and exit
+    -v, --verbose  verbose logging
 """
 
-name    = "record_ACR_OPV_auto-SSO"
-version = "2016-03-28T1549Z"
+from __future__ import print_function
 
-import urllib
+name    = "record_ACR_OPV_auto-SSO"
+version = "2016-04-21T0959Z"
+
+import docopt
+import getpass
 import imp
 import os
+import retrying
+import urllib
 import time
-import getpass
+
 from selenium import webdriver
 from selenium.webdriver.common.keys import Keys
 import shijian
 
 URL_login  = "https://login.cern.ch"
 
-URL_ACR   = "https://atlasop.cern.ch/ATLASview/ACR.htm"
-URL_ACR01 = "https://atlasop.cern.ch/ATLASview/webpic/ACR01.jpg"
-URL_ACR02 = "https://atlasop.cern.ch/ATLASview/webpic/ACR02.jpg"
-URL_ATLAS_detector_status = \
-    "https://atlasop.cern.ch/overview/dcs/snapshots/ATLAS.png"
-URL_Atlantis = "https://atlas-live.cern.ch/event_files/MinBias/latest.png"
-URL_LHC1  = "http://vistar-capture.web.cern.ch/vistar-capture/lhc1.png"
-URL_LHC2  = "http://vistar-capture.web.cern.ch/vistar-capture/lhc2.png"
-URL_LHC3  = "http://vistar-capture.web.cern.ch/vistar-capture/lhc3.png"
-URL_LHC_dashboard = "http://lhcdashboard-images.web.cern.ch/" + \
-    "lhcdashboard-images/images/lhc/prod/dashboard.png"
-URL_LHC_dashboard_hd = "http://lhcdashboard-images.web.cern.ch/" + \
-    "lhcdashboard-images/images/lhc/prod/dashboard-hd.png"
-URL_LHC_BSRT = "http://cs-ccr-www3.cern.ch/vistar_capture/lhcbsrt.png"
-URL_LHC_CTF3 = "http://cs-ccr-www3.cern.ch/vistar_capture/ctfgen.png"
+URL_ACR                   = "https://atlasop.cern.ch/ATLASview/ACR.htm"
+URL_ACR01                 = "https://atlasop.cern.ch/ATLASview/webpic/ACR01.jpg"
+URL_ACR02                 = "https://atlasop.cern.ch/ATLASview/webpic/ACR02.jpg"
+URL_ATLAS_detector_status = "https://atlasop.cern.ch/overview/dcs/snapshots/ATLAS.png"
+URL_Atlantis              = "https://atlas-live.cern.ch/event_files/MinBias/latest.png"
+URL_LHC1                  = "http://vistar-capture.web.cern.ch/vistar-capture/lhc1.png"
+URL_LHC2                  = "http://vistar-capture.web.cern.ch/vistar-capture/lhc2.png"
+URL_LHC3                  = "http://vistar-capture.web.cern.ch/vistar-capture/lhc3.png"
+URL_LHC_dashboard         = "http://lhcdashboard-images.web.cern.ch/lhcdashboard-images/images/lhc/prod/dashboard.png"
+URL_LHC_dashboard_hd      = "http://lhcdashboard-images.web.cern.ch/lhcdashboard-images/images/lhc/prod/dashboard-hd.png"
+URL_LHC_BSRT              = "http://cs-ccr-www3.cern.ch/vistar_capture/lhcbsrt.png"
+URL_LHC_CTF3              = "http://cs-ccr-www3.cern.ch/vistar_capture/ctfgen.png"
 
-URL_OD01          = "https://atlasop.cern.ch/ATLASview/webpic/OD01.jpg"
-URL_OD02          = "https://atlasop.cern.ch/ATLASview/webpic/OD02.jpg"
-URL_UX15SideA02HD = "https://atlasop.cern.ch/ATLASview/webpic/UX15SideA02HD.jpg"
-URL_UX15SideA04HD = "https://atlasop.cern.ch/ATLASview/webpic/UX15SideA04HD.jpg"
-URL_UX15SideC01HD = "https://atlasop.cern.ch/ATLASview/webpic/UX15SideC01HD.jpg"
-URL_UX15SideC03HD = "https://atlasop.cern.ch/ATLASview/webpic/UX15SideC03HD.jpg"
-URL_SX1HD01       = "https://atlasop.cern.ch/ATLASview/webpic/SX1HD01.jpg"
+URL_OD01                  = "https://atlasop.cern.ch/ATLASview/webpic/OD01.jpg"
+URL_OD02                  = "https://atlasop.cern.ch/ATLASview/webpic/OD02.jpg"
+URL_UX15SideA02HD         = "https://atlasop.cern.ch/ATLASview/webpic/UX15SideA02HD.jpg"
+URL_UX15SideA04HD         = "https://atlasop.cern.ch/ATLASview/webpic/UX15SideA04HD.jpg"
+URL_UX15SideC01HD         = "https://atlasop.cern.ch/ATLASview/webpic/UX15SideC01HD.jpg"
+URL_UX15SideC03HD         = "https://atlasop.cern.ch/ATLASview/webpic/UX15SideC03HD.jpg"
+URL_SX1HD01               = "https://atlasop.cern.ch/ATLASview/webpic/SX1HD01.jpg"
 
-def main():
+def main(options):
+
+    verbose = options["--verbose"]
 
     print("\n" + name + "\n")
 
@@ -116,96 +128,76 @@ def main():
 
         if clock_snapshot_duration.time() >= snapshot_duration_in_seconds:
 
-            print("\rtake snapshot", end = "")
+            print("\rtake snapshot")
 
             timestamp = str(shijian.time_UNIX())
 
             # access ACR
 
-            driver.set_window_size(801, 674)
+            save_screenshot(
+                URL         = URL_ACR01,
+                window_size = (801, 674),
+                filename    = timestamp + "_ACR01.png"
+            )
 
-            driver.get(URL_ACR01)
-            time.sleep(2)
-            driver.save_screenshot(shijian.propose_filename(
-                filename = timestamp + "_ACR01.png"
-            ))
-
-            driver.get(URL_ACR02)
-            time.sleep(2)
-            driver.save_screenshot(shijian.propose_filename(
-                filename = timestamp + "_ACR02.png"
-            ))
+            save_screenshot(
+                URL         = URL_ACR02,
+                window_size = (801, 674),
+                filename    = timestamp + "_ACR02.png"
+            )
 
             # access LHC
 
-            urllib.urlretrieve(
-                URL_LHC1,
-                shijian.propose_filename(
-                    filename = timestamp + "_LHC1.png"
-                )
+            retrieve_from_URL(
+                URL      = URL_LHC1,
+                filename = timestamp + "_LHC1.png"
             )
 
-            urllib.urlretrieve(
-                URL_LHC2,
-                shijian.propose_filename(
-                    filename = timestamp + "_LHC2.png"
-                )
+            retrieve_from_URL(
+                URL      = URL_LHC2,
+                filename = timestamp + "_LHC2.png"
             )
 
-            urllib.urlretrieve(
-                URL_LHC3,
-                shijian.propose_filename(
-                    filename = timestamp + "_LHC3.png"
-                )
+            retrieve_from_URL(
+                URL      = URL_LHC3,
+                filename = timestamp + "_LHC3.png"
             )
 
-            urllib.urlretrieve(
-                URL_LHC_dashboard,
-                shijian.propose_filename(
-                    filename = timestamp + "_LHC_dashboard.png"
-                )
+            retrieve_from_URL(
+                URL      = URL_LHC_dashboard,
+                filename = timestamp + "_LHC_dashboard.png"
             )
 
-            urllib.urlretrieve(
-                URL_LHC_dashboard_hd,
-                shijian.propose_filename(
-                    filename = timestamp + "_LHC_dashboard-hd.png"
-                )
+            retrieve_from_URL(
+                URL      = URL_LHC_dashboard_hd,
+                filename = timestamp + "_LHC_dashboard-hd.png"
             )
 
-            urllib.urlretrieve(
-                URL_LHC_BSRT,
-                shijian.propose_filename(
-                    filename = timestamp + "_LHC_BSRT.png"
-                )
+            retrieve_from_URL(
+                URL      = URL_LHC_BSRT,
+                filename = timestamp + "_LHC_BSRT.png"
             )
 
-            urllib.urlretrieve(
-                URL_LHC_CTF3,
-                shijian.propose_filename(
-                    filename = timestamp + "_LHC_CTF3.png"
-                )
+            retrieve_from_URL(
+                URL      = URL_LHC_CTF3,
+                filename = timestamp + "_LHC_CTF3.png"
             )
 
             # access ATLAS detector status
 
-            driver.set_window_size(865, 942)
-
-            driver.get(URL_ATLAS_detector_status)
-            time.sleep(2)
-            driver.save_screenshot(shijian.propose_filename(
-                filename = timestamp + "_ATLAS_detector_status.png"
-            ))
+            save_screenshot(
+                URL         = URL_ATLAS_detector_status,
+                window_size = (865, 942),
+                filename    = timestamp + "_ATLAS_detector_status.png"
+            )
 
             # access Atlantis
 
-            driver.set_window_size(933, 800)
-
-            driver.get(URL_Atlantis)
-            time.sleep(2)
-            driver.save_screenshot(shijian.propose_filename(
-                filename = timestamp + "_Atlantis.png"
-            ))
+            save_screenshot(
+                URL         = URL_Atlantis,
+                window_size = (933, 800),
+                filename    = timestamp + "_Atlantis.png"
+            )
 
             clock_snapshot_duration.reset()
             clock_snapshot_duration.start()
@@ -216,9 +208,8 @@ def main():
                 time_to_next_snapshot =\
                     snapshot_duration_in_seconds -\
                     int(clock_snapshot_duration.time()
-                ),
-                end = "")
-            )
+                )
+            ))
             time.sleep(1)
 
     driver.close()
@@ -242,5 +233,46 @@ def authenticate():
 
     time.sleep(3)
 
+def retrieve_from_URL(
+    URL      = None,
+    filename = None
+    ):
+
+    code = retrying.retry(
+        lambda: (
+            print("access {URL}".format(URL = URL)),
+            urllib.urlretrieve(
+                URL,
+                shijian.propose_filename(
+                    filename = filename
+                )
+            )
+        ),
+        stop_max_delay = 10000 # 10 s
+    ); code()
+
+def save_screenshot(
+    URL         = None,
+    window_size = None,
+    filename    = None
+    ):
+
+    driver.set_window_size(window_size[0], window_size[1])
+    code = retrying.retry(
+        lambda: (
+            print("access {URL}".format(URL = URL)),
+            driver.get(URL),
+            time.sleep(2),
+            driver.save_screenshot(shijian.propose_filename(
+                filename = filename
+            ))
+        ),
+        stop_max_delay = 10000 # 10 s
+    ); code()
+
 if __name__ == "__main__":
-    main()
+    options = docopt.docopt(__doc__)
+    if options["--version"]:
+        print(version)
+        exit()
+    main(options)

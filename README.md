@@ -9,9 +9,9 @@ utilities for viewing CERN information
 
 ```Bash
 sudo pip install docopt
+sudo pip install moviepy
 sudo pip install selenium
 sudo pip install shijian
-sudo pip install moviepy
 git clone https://github.com/wdbm/CERN-views.git
 cd CERN-views
 
