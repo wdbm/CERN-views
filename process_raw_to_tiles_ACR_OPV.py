@@ -44,7 +44,7 @@ options:
 """
 
 name    = "process_raw_to_tiles_ACR_OPV"
-version = "2016-03-28T1746Z"
+version = "2016-04-22T1201Z"
 
 import docopt
 import os
@@ -85,16 +85,16 @@ def main(options):
                 filename = filename_tile
             ))
             if engage_style_1:
-                command_tile = \
-                    "montage " + \
-                    "logo_ATLAS_2.png " + \
-                    "{timestamp}_ACR02.png " + \
-                    "{timestamp}_ACR01.png " + \
-                    "{timestamp}_LHC1.png "  + \
-                    "{timestamp}_LHC_dashboard.png " + \
-                    "null: " + \
-                    "-mode Concatenate " + \
-                    "-tile 3x3 " + \
+                command_tile                         =\
+                    "montage "                       +\
+                    "logo_ATLAS_2.png "              +\
+                    "{timestamp}_ACR02.png "         +\
+                    "{timestamp}_ACR01.png "         +\
+                    "{timestamp}_LHC1.png "          +\
+                    "{timestamp}_LHC_dashboard.png " +\
+                    "null: "                         +\
+                    "-mode Concatenate "             +\
+                    "-tile 3x3 "                     +\
                     "{index}_tile.png"
                 command_tile = command_tile.format(
                     timestamp = list_of_timestamps_ordered[index],
@@ -103,36 +103,36 @@ def main(options):
                 print(command_tile)
                 os.system(command_tile)
             if engage_style_2:
-                command_resize_ACR01 = \
-                    "convert " + \
-                    "-geometry x729 " + \
-                    "{timestamp}_ACR01.png " + \
+                command_resize_ACR01 =\
+                    "convert "               +\
+                    "-geometry x729 "        +\
+                    "{timestamp}_ACR01.png " +\
                     "{timestamp}_ACR01_tmp.png"
                 command_resize_ACR01 = command_resize_ACR01.format(
                     timestamp = list_of_timestamps_ordered[index],
                 )
                 os.system(command_resize_ACR01)
-                command_resize_ACR02 = \
-                    "convert " + \
-                    "-geometry x729 " + \
-                    "{timestamp}_ACR02.png " + \
+                command_resize_ACR02         =\
+                    "convert "               +\
+                    "-geometry x729 "        +\
+                    "{timestamp}_ACR02.png " +\
                     "{timestamp}_ACR02_tmp.png"
                 command_resize_ACR02 = command_resize_ACR02.format(
                     timestamp = list_of_timestamps_ordered[index],
                 )
                 os.system(command_resize_ACR02)
-                command_tile = \
-                    "montage " + \
-                    "{timestamp}_ACR02_tmp.png " + \
-                    "{timestamp}_ACR01_tmp.png " + \
-                    "{timestamp}_Atlantis.png " + \
-                    "logo_ATLAS_3.png " + \
-                    "{timestamp}_LHC1.png "  + \
-                    "{timestamp}_LHC_dashboard.png " + \
-                    "null: " + \
-                    "-mode Concatenate " + \
-                    "-tile 3x3 " + \
-                    "-background black " + \
+                command_tile                         =\
+                    "montage "                       +\
+                    "{timestamp}_ACR02_tmp.png "     +\
+                    "{timestamp}_ACR01_tmp.png "     +\
+                    "{timestamp}_Atlantis.png "      +\
+                    "logo_ATLAS_3.png "              +\
+                    "{timestamp}_LHC1.png "          +\
+                    "{timestamp}_LHC_dashboard.png " +\
+                    "null: "                         +\
+                    "-mode Concatenate "             +\
+                    "-tile 3x3 "                     +\
+                    "-background black "             +\
                     "{index}_tile.png"
                 command_tile = command_tile.format(
                     timestamp = list_of_timestamps_ordered[index],

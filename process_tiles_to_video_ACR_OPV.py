@@ -34,36 +34,22 @@
 """
 
 name    = "process_tiles_to_video_ACR_OPV"
-version = "2016-03-25T1111Z"
+version = "2016-04-22T1214Z"
 
 import os
-import time
 import re
+import time
+
 from   moviepy.editor import *
-
-def ls_files(
-    path = "."
-    ):
-    return([filename for filename in os.listdir(path) if os.path.isfile(
-        os.path.join(path, filename)
-    )])
-
-def sort_alphanumeric(
-    unsorted_list = None
-    ): 
-    convert = lambda text: int(text) if text.isdigit() else text 
-    alphanumeric_key = lambda key: [
-        convert(c) for c in re.split('([0-9]+)', key)
-    ]
-    return(sorted(unsorted_list, key = alphanumeric_key))
+import shijian
 
 def main():
 
-    list_of_files = ls_files()
+    list_of_files = shijian.ls_files()
     list_of_tile_image_files = [filename for filename in list_of_files \
         if "_tile.png" in filename
     ]
-    list_of_tile_image_files = sort_alphanumeric(list_of_tile_image_files)
+    list_of_tile_image_files = shijian.natural_sort(list_of_tile_image_files)
     #number_of_tiled_images = len(list_of_tile_image_files)
 
     video = ImageSequenceClip(list_of_tile_image_files, fps = 20)
@@ -81,9 +67,9 @@ def main():
     #video = video.set_audio(sound_track)
     video.write_videofile(
         "video.avi",
-        fps         = 10,
-        codec       = "png",
-        audio       = False#True
+        fps   = 10,
+        codec = "png",
+        audio = False #True
     )
 
 if __name__ == "__main__":
