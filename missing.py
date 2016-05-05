@@ -44,7 +44,7 @@ options:
 """
 
 name    = "missing"
-version = "2016-03-30T0801Z"
+version = "2016-05-05T1715Z"
 
 import docopt
 import PIL.Image
@@ -77,19 +77,25 @@ def main(options):
         print("number of images to analyze: {count}".format(
             count = len(list_of_image_files)
         ))
+        example_problem_filenames = [
+            "authentication_1.png",
+            "authentication_2.png",
+            "secure_connection_failed_1.png"
+        ]
         for index, filename in enumerate(list_of_image_files):
             print progress.add_datum(fraction = index / len(list_of_image_files)),
-            if os.path.isfile(filename) and filename != "authentication_1.png":
+            if os.path.isfile(filename) and filename != "authentication_1.png" and filename != "authentication_2.png" and filename != "secure_connection_failed_1.png":
                 if engage_check_for_problem_files_detailed:
-                    RMS = datavision.difference_RMS_images(
-                        filename_1 = "authentication_1.png",
-                        filename_2 = filename
-                    )
-                    if RMS is not None and RMS < 1000:
-                        possible_problem_filenames.append(filename)
-                        #print("possible problem file: {filename}\n".format(
-                        #    filename = filename
-                        #))
+                    for example_problem_filename in example_problem_filenames:
+                        RMS = datavision.difference_RMS_images(
+                            filename_1 = example_problem_filename,
+                            filename_2 = filename
+                        )
+                        if RMS is not None and RMS < 1000:
+                            possible_problem_filenames.append(filename)
+                            #print("possible problem file: {filename}\n".format(
+                            #    filename = filename
+                            #))
                 else:
                     try:
                         image_1 = PIL.Image.open(filename)
